@@ -167,11 +167,11 @@ int main(int argc, char* argv[])
 
 	// >>>>> PUBLISH QoS 0
 	printf("Publish: QoS 0\n");
-	mqtt_publish(&broker, "hello/emqtt", "Example: QoS 0", 0);
+	mqtt_publish(&broker, "wei/sens_t", "Example: QoS 0", 0);
 
 	// >>>>> PUBLISH QoS 1
 	printf("Publish: QoS 1\n");
-	mqtt_publish_with_qos(&broker, "hello/emqtt", "Example: QoS 1", 0, 1, &msg_id);
+	mqtt_publish_with_qos(&broker, "wei/sens_t", "Example: QoS 1", 0, 1, &msg_id);
 	// <<<<< PUBACK
 	packet_length = read_packet(1);
 	if(packet_length < 0)
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
 
 	// >>>>> PUBLISH QoS 2
 	printf("Publish: QoS 2\n");
-	mqtt_publish_with_qos(&broker, "hello/emqtt", "Example: QoS 2", 1, 2, &msg_id); // Retain
+	mqtt_publish_with_qos(&broker, "wei/sens_t", "Example: QoS 2", 1, 2, &msg_id); // Retain
 	// <<<<< PUBREC
 	packet_length = read_packet(1);
 	if(packet_length < 0)
