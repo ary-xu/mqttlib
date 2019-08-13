@@ -169,6 +169,7 @@ int main()
 {
 	int packet_length;
 	uint16_t msg_id, msg_id_rcv;
+	FILE *fp;
 
 	mqtt_init(&broker, "client-id");
 	//mqtt_init_auth(&broker, "quijote", "rocinante");
@@ -224,6 +225,10 @@ int main()
 		return -3;
 	}
 
+	if ((fp = fopen("wei-sens_t.json", "w")) == NULL)
+		return -4;
+	fprintf(fp, "[\n");
+
 	while(1)
 	{
 		// <<<<<
@@ -245,9 +250,15 @@ int main()
 				len = mqtt_parse_publish_msg(packet_buffer, msg);
 				msg[len] = '\0'; // for printf
 				printf("%s %s\n", topic, msg);
+
+				fprintf(fp, "{\"subject\": %s, \"message\": %s}\n", topic, msg); 
 			}
 		}
 
 	}
+
+	fprintf(fp, "]\n");
+	fclose(fp);
+
 	return 0;
 }
