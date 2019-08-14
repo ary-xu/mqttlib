@@ -15,7 +15,6 @@
 # along with python-emqtt.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Copyright 2012 Vicente Ruiz Rodríguez <vruiz2.0@gmail.com>. All rights reserved.
 #
 
 from __future__ import print_function
@@ -45,7 +44,7 @@ def read(sck, timeout=None):
     return None
 
 
-HOST = '192.168.10.40'
+HOST = '127.0.0.1'
 PORT = 1883
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))

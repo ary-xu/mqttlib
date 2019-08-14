@@ -42,7 +42,8 @@ MqttPacket_init(MqttPacket* self, PyObject* args, PyObject* kwargs)
 	self->retain = Py_False;
 	if(MQTTParseMessageRetain(data))
 		self->retain = Py_True;
-	MQTTParseMessageId(data, self->message_id);
+	//MQTTParseMessageId(data, self->message_id);
+	self->message_id = mqtt_parse_msg_id(data);
 
 	Py_RETURN_NONE;
 }
@@ -75,7 +76,8 @@ MqttPacket_get_topic(MqttPacket* self)
 	char* ptr;
 	char* data = PyString_AS_STRING(self->data);
 
-	MQTTParsePublishTopicPtr(data, ptr, len);
+	//MQTTParsePublishTopicPtr(data, ptr, len);
+	len = mqtt_parse_pub_topic_ptr(data, &ptr);
 	if(ptr == NULL)
 	{
 		Py_RETURN_NONE;
@@ -97,7 +99,8 @@ MqttPacket_get_message(MqttPacket* self)
 	char* ptr;
 	char* data = PyString_AS_STRING(self->data);
 
-	MQTTParsePublishMessagePtr(data, ptr, len);
+	//MQTTParsePublishMessagePtr(data, ptr, len);
+	len = mqtt_parse_pub_msg_ptr(data, &ptr);
 	if(ptr == NULL)
 	{
 		Py_RETURN_NONE;
