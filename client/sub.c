@@ -40,7 +40,7 @@
 #include <arpa/inet.h>
 #include <linux/tcp.h>
 #include <signal.h>
-
+#include <sys/stat.h>
 
 #define RCVBUFSIZE 1024
 uint8_t packet_buffer[RCVBUFSIZE];
@@ -161,6 +161,35 @@ void term(int sig)
 	exit(0);
 }
 
+void write_file(uint8_t *topic, uint8_t *msg)
+{
+	FILE *fp;
+	struct stat st;
+	int len;
+	char* filename = "sens_t.json";
+	char buf[256] = "";
+
+	stat(filename, &st);
+	len = st.st_size;
+	if (len < 4)
+	{
+		fp = fopen(filename, "w");
+		if (NULL == fp)
+			return;
+		fprintf(fp, "[\n]\n");
+		fclose(fp);
+	}
+
+	fp = fopen(filename, "r+");
+	if (NULL == fp)
+		return;
+
+	sprintf(buf, "{\"subject\": %s, \"message\": %s}\n]\n", topic, msg);
+	fseek(fp, -2, SEEK_END);
+	fwrite(buf, strlen(buf), 1, fp);
+	fclose(fp);
+}
+
 /**
  * Main routine
  *
@@ -169,7 +198,6 @@ int main()
 {
 	int packet_length;
 	uint16_t msg_id, msg_id_rcv;
-	FILE *fp;
 
 	mqtt_init(&broker, "client-id");
 	//mqtt_init_auth(&broker, "quijote", "rocinante");
@@ -225,10 +253,6 @@ int main()
 		return -3;
 	}
 
-	if ((fp = fopen("wei-sens_t.json", "w")) == NULL)
-		return -4;
-	fprintf(fp, "[\n");
-
 	while(1)
 	{
 		// <<<<<
@@ -251,14 +275,11 @@ int main()
 				msg[len] = '\0'; // for printf
 				printf("%s %s\n", topic, msg);
 
-				fprintf(fp, "{\"subject\": %s, \"message\": %s}\n", topic, msg); 
+				write_file(topic, msg);
 			}
 		}
 
 	}
-
-	fprintf(fp, "]\n");
-	fclose(fp);
 
 	return 0;
 }
